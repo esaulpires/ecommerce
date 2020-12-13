@@ -13,7 +13,7 @@ class Model{
 
 
     var_dump($method , $fieldName);
-    exit;
+   
   }
 
 }
