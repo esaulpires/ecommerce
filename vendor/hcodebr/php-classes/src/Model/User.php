@@ -66,6 +66,37 @@ public static function logout()
 
 }
 
+ public static function listAll()
+ 
+ {
+
+    $sql = new Sql();
+    return $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) ORDER BY b.desperson");
+
+ }
+
+
+//Adicionado esse ajuste para realizar a edição
+
+ public function get($iduser)
+ {
+
+     $sql = new Sql();
+
+     $results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) WHERE a.iduser = :iduser", array(
+         ":iduser"=>$iduser
+     ));
+
+     $data = $results[0];
+
+     $data['desperson'] = utf8_encode($data['desperson']);
+
+
+     $this->setData($data);
+
+ }
+
+
 
 
 }
