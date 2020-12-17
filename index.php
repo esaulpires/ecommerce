@@ -58,6 +58,8 @@ $app->get('/admin/logout/', function() {
 
 });
 
+
+// Rota para listar usuarios
 $app->get("/admin/users/", function() {
 
 		User::verifyLogin();
@@ -72,7 +74,7 @@ $app->get("/admin/users/", function() {
 
 
 
-//Criar usuario formulario
+//Tela Criar usuario formulario
 $app->get("/admin/users/create/", function() {
 
 	User::verifyLogin();
@@ -87,10 +89,20 @@ $app->get("/admin/users/:iduser/delete/", function($iduser){
 
 	User::verifyLogin();
 
+	$user = new User();
+
+	$user->get((int)$iduser);
+
+	$user->delete();
+
+	header("Location: /admin/users");
+	
+	exit;
+
 });
 
 
-//Editar usuario
+//Tela Editar usuario
 $app->get('/admin/users/:iduser/', function($iduser){
  
 	User::verifyLogin();
@@ -107,17 +119,42 @@ $app->get('/admin/users/:iduser/', function($iduser){
   
  });
 
-//Insert do usuário
+//Insert do usuário, salvar usuario
 	$app->post("/admin/users/create/", function(){
 
 		User::verifyLogin();
 	
+		//var_dump($_POST);
+		$user = new User();
+		$_POST["inadmin"] = (isset($_POST["inadmin"]))?1:0;
+
+		$user->setData($_POST);
+
+		$user->save();
+
+		header("Location: /admin/users");
+		exit;
+
 	});
 
 
+	// UPDATE - salvar a edição do usuario
 	$app->post("/admin/users/:iduser/", function($iduser){
 
 		User::verifyLogin();
+
+		$user = new User();
+
+		$_POST["inadmin"] = (isset($_POST["inadmin"]))?1:0;
+
+		$user->get((int)$iduser);
+
+		$user->setData($_POST);
+
+		$user->update();
+
+		header("Location: /admin/users");
+		exit;
 	
 	});
 	
