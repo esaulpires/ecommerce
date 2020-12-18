@@ -157,6 +157,61 @@ $app->get('/admin/users/:iduser/', function($iduser){
 		exit;
 	
 	});
+
+	$app->get("/admin/forgot/", function(){
+
+		$page = new PageAdmin([
+			"header"=>false,
+			"footer"=>false
+		]);
+	
+		$page->setTpl("forgot");
+
+	});
+
+	$app->post("/admin/forgot/", function(){
+
+		$user = User::getForgot($_POST["email"]);
+		header("Location: /admin/forgot/sent");
+		exit;
+
+	});
+
+
+$app->get("/admin/forgot/sent/", function(){
+
+	$page = new PageAdmin([
+		"header"=>false,
+		"footer"=>false
+	]);
+
+	$page->setTpl("forgot-sent");
+
+});
+
+
+
+$app->get("/forgot/reset/", function(){
+
+	$user = User::validForgotDecrypt($_GET["code"]);
+	$page = new Page([
+		"header"=>false,
+		"footer"=>false
+	]);
+
+	$page->setTpl("forgot-reset", array(
+
+		"name"=>$user["desperson"],
+		"code"=>$_GET["code"]
+
+	));
+
+});
+
+
+
+
+
 	
 $app->run();
 
