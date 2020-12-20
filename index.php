@@ -120,22 +120,28 @@ $app->get('/admin/users/:iduser/', function($iduser){
  });
 
 //Insert do usuário, salvar usuario
-	$app->post("/admin/users/create/", function(){
+$app->post("/admin/users/create/", function () {
 
-		User::verifyLogin();
-	
-		//var_dump($_POST);
-		$user = new User();
-		$_POST["inadmin"] = (isset($_POST["inadmin"]))?1:0;
+	User::verifyLogin();
 
-		$user->setData($_POST);
+   $user = new User();
 
-		$user->save();
+	$_POST["inadmin"] = (isset($_POST["inadmin"])) ? 1 : 0;
 
-		header("Location: /admin/users");
-		exit;
+	$_POST['despassword'] = password_hash($_POST["despassword"], PASSWORD_DEFAULT, [
 
-	});
+		"cost"=>12
+
+	]);
+
+	$user->setData($_POST);
+
+   $user->save();
+
+   header("Location: /admin/users");
+	exit;
+
+});
 
 
 	// UPDATE - salvar a edição do usuario
@@ -158,6 +164,7 @@ $app->get('/admin/users/:iduser/', function($iduser){
 	
 	});
 
+	// Rota para o formulario de esqueci a senha
 	$app->get("/admin/forgot/", function(){
 
 		$page = new PageAdmin([
@@ -169,6 +176,8 @@ $app->get('/admin/users/:iduser/', function($iduser){
 
 	});
 
+	
+	//Rota para enviar o formulario
 	$app->post("/admin/forgot/", function(){
 
 		$user = User::getForgot($_POST["email"]);
@@ -178,6 +187,7 @@ $app->get('/admin/users/:iduser/', function($iduser){
 	});
 
 
+	// Renderizando o template do forgot
 $app->get("/admin/forgot/sent/", function(){
 
 	$page = new PageAdmin([
@@ -191,10 +201,10 @@ $app->get("/admin/forgot/sent/", function(){
 
 
 
-$app->get("/forgot/reset/", function(){
+$app->get("/admin/forgot/reset/", function(){
 
 	$user = User::validForgotDecrypt($_GET["code"]);
-	$page = new Page([
+	$page = new PageAdmin([
 		"header"=>false,
 		"footer"=>false
 	]);
@@ -205,6 +215,8 @@ $app->get("/forgot/reset/", function(){
 		"code"=>$_GET["code"]
 
 	));
+
+
 
 });
 
