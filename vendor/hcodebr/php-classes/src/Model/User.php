@@ -206,14 +206,14 @@ $this->setData($results[0]);
 				$code = openssl_encrypt($dataRecovery['idrecovery'], 'AES-128-CBC', pack("a16", User::SECRET), 0, pack("a16", User::SECRET_IV));
 
 				$code = base64_encode($code);
-
+              
 				if ($inadmin === true) {
 
-					$link = "http://www.workflowinformatica.com.br/admin/forgot/reset?code=$code";
+					$link = "http://www.workflowinformatica.com.br/admin/forgot/reset/$code";
 
 				} else {
 
-					$link = "http://www.workflowinformatica.com.br/forgot/reset?code=$code";
+					$link = "http://www.workflowinformatica.com.br/forgot/reset/$code";
 					
 				}				
 
@@ -237,7 +237,7 @@ $this->setData($results[0]);
 
     public static function validForgotDecrypt($code)
 	{
-
+		$code = str_replace(' ', '+', $code);
 		$code = base64_decode($code);
 
 		$idrecovery = openssl_decrypt($code, 'AES-128-CBC', pack("a16", User::SECRET), 0, pack("a16", User::SECRET_IV));
@@ -273,6 +273,40 @@ $this->setData($results[0]);
 	}
 
 
+	public static function setFogotUsed($idrecovery)
+	{
+
+		$sql = new Sql();
+
+		$sql->query("UPDATE tb_userspasswordsrecoveries SET dtrecovery = NOW() WHERE idrecovery = :idrecovery", array(
+			":idrecovery"=>$idrecovery
+		));
+
+	}
+	
+
+	public function setPassword($password)
+	{
+
+		$sql = new Sql();
+
+		$sql->query("UPDATE tb_users SET despassword = :password WHERE iduser = :iduser", array(
+			":password"=>$password,
+			":iduser"=>$this->getiduser()
+		));
+
+	}
+
+
+
+	public static function getPasswordHash($password)
+	{
+
+		return password_hash($password, PASSWORD_DEFAULT, [
+			'cost'=>12
+		]);
+
+	}
 
 
 }

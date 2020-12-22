@@ -85,6 +85,7 @@ $app->get("/admin/users/create/", function() {
 });
 
 
+
 $app->get("/admin/users/:iduser/delete/", function($iduser){
 
 	User::verifyLogin();
@@ -119,6 +120,8 @@ $app->get('/admin/users/:iduser/', function($iduser){
   
  });
 
+
+
 //Insert do usuário, salvar usuario
 $app->post("/admin/users/create/", function () {
 
@@ -144,6 +147,9 @@ $app->post("/admin/users/create/", function () {
 });
 
 
+
+
+
 	// UPDATE - salvar a edição do usuario
 	$app->post("/admin/users/:iduser/", function($iduser){
 
@@ -163,6 +169,9 @@ $app->post("/admin/users/create/", function () {
 		exit;
 	
 	});
+
+
+
 
 	// Rota para o formulario de esqueci a senha
 	$app->get("/admin/forgot/", function(){
@@ -201,27 +210,50 @@ $app->get("/admin/forgot/sent/", function(){
 
 
 
-$app->get("/admin/forgot/reset/", function(){
-
-	$user = User::validForgotDecrypt($_GET["code"]);
+$app->get("/admin/forgot/reset/:get/", function($get){
+	
+	//var_dump($get);
+	//die;
+	
+	$user = User::validForgotDecrypt($get);
 	$page = new PageAdmin([
 		"header"=>false,
 		"footer"=>false
 	]);
 
+
 	$page->setTpl("forgot-reset", array(
 
 		"name"=>$user["desperson"],
-		"code"=>$_GET["code"]
+		"code"=>$get
 
 	));
-
-
 
 });
 
 
+$app->post("/admin/forgot/reset/", function(){
 
+	$forgot = User::validForgotDecrypt($_POST["code"]);	
+
+	User::setFogotUsed($forgot["idrecovery"]);
+
+	$user = new User();
+
+	$user->get((int)$forgot["iduser"]);
+
+	$password = User::getPasswordHash($_POST["password"]);
+
+	$user->setPassword($password);
+
+	$page = new PageAdmin([
+		"header"=>false,
+		"footer"=>false
+	]);
+
+	$page->setTpl("forgot-reset-success");
+
+});
 
 
 	
