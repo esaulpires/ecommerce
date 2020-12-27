@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\Exception;
 class Mailer {
 	
 	const USERNAME = "informaticaworkflow@gmail.com";
-	const PASSWORD = "TestandoEmail";
+	const PASSWORD = "********";
 	const NAME_FROM = "Workflow Informatica";
 
 	private $mail;
