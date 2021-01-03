@@ -359,16 +359,27 @@ class Cart extends Model {
 
 
 
-	public function getCalculateTotal()
-	{
+
+
+	public function getCalculateTotal(){
 
 		$this->updateFreight();
-
 		$totals = $this->getProductsTotals();
+		if ((int)$totals['nrqtd'] > 0){
+			$this->setvlsubtotal($totals['vlprice']);
+			$this->setvltotal($totals['vlprice'] + $this->getvlfreight());
+		} else {
 
-		$this->setvlsubtotal($totals['vlprice']);
-		$this->setvltotal($totals['vlprice'] + (float)$this->getvlfreight());
 
+			$sql = new Sql();
+
+			$sql->query("update tb_carts set vlfreight = null, nrdays = null where idcart = :idcart ", [':idcart'=>$this->getidcart()]);
+
+			$this->setvlsubtotal(0);
+			$this->setvltotal(0);
+			$this->setnrdays(0);
+			return Cart::setMsgError("Carrinho de Compra não possui itens!");
+		}
 	}
 
 

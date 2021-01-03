@@ -34,6 +34,7 @@ class Product extends Model {
 	}
 
 
+
 	public function save()
 	{
 
@@ -50,9 +51,15 @@ class Product extends Model {
 			":desurl"=>$this->getdesurl()
 		));
 
+	
+
 		$this->setData($results[0]);
 
 	}
+
+
+
+
 
 	public function get($idproduct)
 	{
