@@ -90,7 +90,7 @@ Class User extends Model{
 
 			$user = new User();
 
-			$data['desperson'] = utf8_encode($data['desperson']);
+			$data['desperson'] = $data['desperson'];
 
 			$user->setData($data);
 
@@ -149,7 +149,7 @@ array(
 
 ":desperson"=>utf8_decode($this->getdesperson()),
 ":deslogin"=>$this->getdeslogin(),
-":despassword"=>$this->getdespassword(),
+":despassword"=>User::getPasswordHash($this->getdespassword()),
 ":desemail"=>$this->getdesemail(),
 ":nrphone"=>$this->getnrphone(),
 ":inadmin"=>$this->getinadmin()
@@ -437,6 +437,20 @@ $this->setData($results[0]);
 
 
 
+
+
+	public static function checkLoginExist($login)
+	{
+
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
+			':deslogin'=>$login
+		]);
+
+		return (count($results) > 0);
+
+	}
 
 
 
