@@ -123,7 +123,18 @@ Class User extends Model{
 public static function logout()
 {
 
-    $_SESSION[User::SESSION] = NULL;
+	$_SESSION[User::SESSION] = NULL;
+	$_SESSION['registerValues'] = NULL;
+
+        $_SESSION['registerValues'] = [
+
+            'name'=>NULL,
+
+            'email'=>NULL,
+
+            'phone'=>NULL
+
+        ];
 
 }
 
