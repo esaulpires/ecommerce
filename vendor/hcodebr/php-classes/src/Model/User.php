@@ -206,7 +206,7 @@ array(
 ":iduser"=>$this->getiduser(),
 ":desperson"=>$this->getdesperson(),
 ":deslogin"=>$this->getdeslogin(),
-":despassword"=>$this->getdespassword(),
+":despassword"=>User::getPasswordHash($this->getdespassword()),
 ":desemail"=>$this->getdesemail(),
 ":nrphone"=>$this->getnrphone(),
 ":inadmin"=>$this->getinadmin()
