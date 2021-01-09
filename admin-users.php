@@ -6,6 +6,7 @@ use \Hcode\Model\User;
 
 
 
+
 // Rota para listar usuarios
 $app->get("/admin/users/", function() {
 
