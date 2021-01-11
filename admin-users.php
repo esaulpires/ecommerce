@@ -42,6 +42,10 @@ $app->get("/admin/users/", function() {
 	}
 */
 
+
+
+
+
 	$page = new PageAdmin();
 
 	$page->setTpl("users", array(
