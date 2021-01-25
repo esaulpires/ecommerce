@@ -5,7 +5,7 @@ Projeto desenvolvido do zero no [Curso de PHP 7](https://www.udemy.com/curso-com
 Template utilizado Admin LTE https://adminlte.io/ 
 
 
-#### Conceitos parendidos / desenvolvidos durante o projeto:
+#### Conceitos aprendidos / desenvolvidos durante o projeto:
 
 * OOP.
 * CRUD.
