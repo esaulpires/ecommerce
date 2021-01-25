@@ -102,7 +102,8 @@ $app->get("/cart/:idproduct/add/", function($idproduct){
 	$product->get((int)$idproduct);
 
 	$cart = Cart::getFromSession();
-
+	
+	//$cart->setFreight("00000-000");
 
 	$qtd = (isset($_GET['qtd'])) ? (int)$_GET['qtd'] : 1;
 
@@ -161,8 +162,14 @@ $app->post("/cart/freight/", function(){
 
 	$cart->setFreight($_POST['zipcode']);
 
-	header("Location: /cart");
-	exit;
+	if (!isset($_POST['zipcode']) || $_POST['zipcode'] == '') {
+
+		Cart::setMsgError("CEP vazio calculado valor padrão");
+		header("Location: /cart");
+		exit;
+
+	}
+
 
 });
 
@@ -175,6 +182,9 @@ $app->get("/checkout/", function(){
 
 	$address = new Address();
 	$cart = Cart::getFromSession();
+	$auxiliar = $cart->getProducts();
+
+
 
 
 	if (!isset($_GET['zipcode']))$_GET['zipcode'] = $cart->getdeszipcode();
@@ -188,7 +198,8 @@ $app->get("/checkout/", function(){
 
 		$cart->save();
 
-		$cart->getCalculateTotal();
+
+
 
 	}
 
@@ -203,12 +214,36 @@ $app->get("/checkout/", function(){
 
 	$page = new Page();
 
-	$page->setTpl("checkout", [
-		'cart'=>$cart->getValues(),
-		'address'=>$address->getValues(),
-		'products'=>$cart->getProducts(),
-		'error'=>Address::getMsgError()
-	]);
+	
+	
+
+
+	foreach($auxiliar  as $a)
+	{
+		$a["idproduct"];
+
+		if (isset($a["idproduct"]) || $a["idproduct"] != '') {
+
+			$page->setTpl("checkout", [
+				'cart'=>$cart->getValues(),
+				'address'=>$address->getValues(),
+				'products'=>$cart->getProducts(),
+				'error'=>Address::getMsgError()
+			]);
+	
+		}
+		
+		
+			
+	
+			
+		
+
+	}
+	if (!isset($a["idproduct"]) || $a["idproduct"] == '') {
+	$page->setTpl("carrinho_vazio");
+	}
+
 
 });
 
@@ -255,6 +290,11 @@ $app->get("/logout/", function(){
 	exit;
 
 });
+
+
+
+
+
 
 
 $app->post("/register/", function(){
@@ -450,9 +490,14 @@ $app->post("/profile/", function(){
 
 $app->post("/checkout/", function(){
 
+
 	User::verifyLogin(false);
 
-	if (!isset($_POST['zipcode']) || $_POST['zipcode'] === '') {
+
+
+	
+	
+	if (!isset($_POST['zipcode']) || $_POST['zipcode'] === '' || $_POST['zipcode'] === '00000000') {
 		Address::setMsgError("Informe o CEP.");
 		header('Location: /checkout');
 		exit;
@@ -510,10 +555,17 @@ $app->post("/checkout/", function(){
 	//exit;
 	
 	$address->save();
+	 
 
 	$cart = Cart::getFromSession();
+	
 
 	$cart->getCalculateTotal();
+
+
+
+
+
 
 	$order = new Order();
 
@@ -527,7 +579,28 @@ $app->post("/checkout/", function(){
 
 	$order->save();
 
-		header("Location: /order/".$order->getidorder() . "/pagseguro/");
+	$cart->removeSession();
+
+	switch ((int)$_POST['payment-method']) {
+
+		case 1:
+		header("Location: /order/".$order->getidorder()."/pagseguro/");
+		break;
+
+		case 2:
+		header("Location: /order/".$order->getidorder()."/paypal/");
+		break;
+
+		case 3:
+			header("Location: /order/".$order->getidorder());
+			break;
+
+	
+
+	}
+
+
+
 	exit;
 
 
@@ -567,6 +640,34 @@ $app->get("/order/:idorder/pagseguro/", function($idorder){
 
 
 
+
+$app->get("/order/:idorder/paypal/", function($idorder){
+
+	User::verifyLogin(false);
+
+	$order = new Order();
+
+	$order->get((int)$idorder);
+
+	$cart = $order->getCart();
+
+	$page = new Page([
+		'header'=>false,
+		'footer'=>false
+	]);
+
+	$page->setTpl("payment-paypal", [
+		'order'=>$order->getValues(),
+		'cart'=>$cart->getValues(),
+		'products'=>$cart->getProducts()
+	]);
+
+
+});
+
+
+
+
 $app->get("/order/:idorder/", function($idorder){
 
 	User::verifyLogin(false);
@@ -586,7 +687,7 @@ $app->get("/order/:idorder/", function($idorder){
 
 
 
-$app->get("/boleto/:idorder", function($idorder){
+$app->get("/boleto/:idorder/", function($idorder){
 
 
 	User::verifyLogin(false);
@@ -597,7 +698,7 @@ $app->get("/boleto/:idorder", function($idorder){
 
 	// DADOS DO BOLETO PARA O SEU CLIENTE
 	$dias_de_prazo_para_pagamento = 10;
-	$taxa_boleto = 5.00;
+	$taxa_boleto = 0.00;
 	$data_venc = date("d/m/Y", time() + ($dias_de_prazo_para_pagamento * 86400));  // Prazo de X dias OU informe data: "13/04/2006"; 
 
 	//var_dump($order->getvltotal());

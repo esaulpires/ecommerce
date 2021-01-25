@@ -66,7 +66,7 @@
                     <th>Qtd</th>
                     <th>Produto</th>
                     <th>Código #</th>
-                    <th>Subtotal</th>
+                    <th>Valor</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -75,7 +75,8 @@
                     <td>{$value.nrqtd}</td>
                     <td>{$value.desproduct}</td>
                     <td>{$value.idproduct}</td>
-                    <td>R${function="formatPrice($order.vltotal)"}</td>
+                    <td>R${function="formatPrice($value.vltotal)"}</td>
+                   
                 </tr>
                 {/loop}
                 </tbody>
@@ -128,6 +129,7 @@
                 <tr>
                     <th>Total:</th>
                     <td>R${function="formatPrice($cart.vltotal)"}</td>
+                    
                 </tr>
                 </tbody></table>
             </div>
@@ -142,7 +144,7 @@
                 <button type="button" onclick="window.location.href = '/admin/orders/{$order.idstatus}/status'" class="btn btn-default pull-left" style="margin-left: 5px;">
                     <i class="fa fa-pencil"></i> Editar Status
                 </button>
-                <button type="button" onclick="window.open('/boleto/{$order.idstatus}')" class="btn btn-default pull-left" style="margin-left: 5px;">
+                <button type="button" onclick="window.open('/boleto/{$order.idorder}')" class="btn btn-default pull-left" style="margin-left: 5px;">
                     <i class="fa fa-barcode"></i> Boleto
                 </button>
 

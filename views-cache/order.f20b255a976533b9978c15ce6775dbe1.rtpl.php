@@ -66,7 +66,7 @@
                     <th>Qtd</th>
                     <th>Produto</th>
                     <th>Código #</th>
-                    <th>Subtotal</th>
+                    <th>Valor</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -75,7 +75,8 @@
                     <td><?php echo htmlspecialchars( $value1["nrqtd"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
                     <td><?php echo htmlspecialchars( $value1["desproduct"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
                     <td><?php echo htmlspecialchars( $value1["idproduct"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
-                    <td>R$<?php echo formatPrice($order["vltotal"]); ?></td>
+                    <td>R$<?php echo formatPrice($value1["vltotal"]); ?></td>
+                   
                 </tr>
                 <?php } ?>
                 </tbody>
@@ -128,6 +129,7 @@
                 <tr>
                     <th>Total:</th>
                     <td>R$<?php echo formatPrice($cart["vltotal"]); ?></td>
+                    
                 </tr>
                 </tbody></table>
             </div>
@@ -142,7 +144,7 @@
                 <button type="button" onclick="window.location.href = '/admin/orders/<?php echo htmlspecialchars( $order["idstatus"], ENT_COMPAT, 'UTF-8', FALSE ); ?>/status'" class="btn btn-default pull-left" style="margin-left: 5px;">
                     <i class="fa fa-pencil"></i> Editar Status
                 </button>
-                <button type="button" onclick="window.open('/boleto/<?php echo htmlspecialchars( $order["idstatus"], ENT_COMPAT, 'UTF-8', FALSE ); ?>')" class="btn btn-default pull-left" style="margin-left: 5px;">
+                <button type="button" onclick="window.open('/boleto/<?php echo htmlspecialchars( $order["idorder"], ENT_COMPAT, 'UTF-8', FALSE ); ?>')" class="btn btn-default pull-left" style="margin-left: 5px;">
                     <i class="fa fa-barcode"></i> Boleto
                 </button>
 

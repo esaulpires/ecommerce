@@ -227,63 +227,29 @@ class Cart extends Model {
 	public function setFreight($nrzipcode)
 	{
 
+		
 		$nrzipcode = str_replace('-', '', $nrzipcode);
 
 		$totals = $this->getProductsTotals();
 
 		if ($totals['nrqtd'] > 0) {
 
-			if ($totals['vlheight'] < 2) $totals['vlheight'] = 2;
-			if ($totals['vllength'] < 16) $totals['vllength'] = 16;
+			$PrazoEntrega = 2;
+			$vlfreight = "30";
 
-			$qs = http_build_query([
-				'nCdEmpresa'=>'',
-				'sDsSenha'=>'',
-				'nCdServico'=>'40010',
-				'sCepOrigem'=>'90870971',
-				'sCepDestino'=>$nrzipcode,
-				'nVlPeso'=>$totals['vlweight'],
-				'nCdFormato'=>'1',
-				'nVlComprimento'=>$totals['vllength'],
-				'nVlAltura'=>$totals['vlheight'],
-				'nVlLargura'=>$totals['vlwidth'],
-				'nVlDiametro'=>'0',
-				'sCdMaoPropria'=>'S',
-				'nVlValorDeclarado'=>$totals['vlprice'],
-				'sCdAvisoRecebimento'=>'S'
-			]);
-
-			$xml = simplexml_load_file("http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo?".$qs);
-			
-			//var_dump($xml);
-			//echo json_encode($xml);
-			//exit;
-
-			$result = $xml->Servicos->cServico;
-
-			if ($result->MsgErro != '') {
-
-				Cart::setMsgError($result->MsgErro);
-
-			} else {
-
-				Cart::clearMsgError();
-
-			}
-
-			$this->setnrdays($result->PrazoEntrega);
-			$this->setvlfreight(Cart::formatValueToDecimal($result->Valor));
+			$this->setnrdays($PrazoEntrega);
+			$this->setvlfreight(Cart::formatValueToDecimal($vlfreight));
 			$this->setdeszipcode($nrzipcode);
 
+
 			$this->save();
+			
+		} else{
 
-			return $result;
-
-		} else {
-
-
-
+			Cart::setMsgError("Algo deu errado");
 		}
+
+		Cart::clearMsgError();
 
 	}
 
@@ -340,6 +306,7 @@ class Cart extends Model {
 		if ($this->getdeszipcode() != '') {
 
 			$this->setFreight($this->getdeszipcode());
+			
 
 		}
 
@@ -361,26 +328,44 @@ class Cart extends Model {
 
 
 
-	public function getCalculateTotal(){
+	public function getCalculateTotal()
+	{
+
+	
+	
+		$zip = $this->getdeszipcode();
+		$this->setFreight($zip);
 
 		$this->updateFreight();
-		$totals = $this->getProductsTotals();
-		if ((int)$totals['nrqtd'] > 0){
-			$this->setvlsubtotal($totals['vlprice']);
-			$this->setvltotal($totals['vlprice'] + $this->getvlfreight());
-		} else {
+		$products = $this->getProducts();
+		if (count($products) == 0)
+		{
+			$this->setnrdays(NULL);
+			$this->setvlfreight(0);
+	
+			//Cart::setMsgError("Carrinho de Compra não possui itens!");
 
-
-			$sql = new Sql();
-
-			$sql->query("update tb_carts set vlfreight = null, nrdays = null where idcart = :idcart ", [':idcart'=>$this->getidcart()]);
-
-			$this->setvlsubtotal(0);
-			$this->setvltotal(0);
-			$this->setnrdays(0);
-			return Cart::setMsgError("Carrinho de Compra não possui itens!");
 		}
+		$totals = $this->getProductsTotals();
+		$this->setvlsubtotal($totals['vlprice']);
+		$this->setvltotal($totals['vlprice'] + $this->getvlfreight());
+		
 	}
+
+
+
+
+
+	public function removeSession()
+	{
+		 $_SESSION[Cart::SESSION] = NULL;
+		 session_regenerate_id();
+	}
+
+
+
+
+
 
 
 

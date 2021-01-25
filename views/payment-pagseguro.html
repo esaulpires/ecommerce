@@ -3,6 +3,7 @@
     <!-- Campos obrigatórios -->  
     <input name="receiverEmail" type="hidden" value="esaulpires@gmail.com">  
     <input name="currency" type="hidden" value="BRL">  
+    <input name="encoding" type="hidden" value="utf-8">  
     
     {loop="$products"} 
     <input name="itemId{$counter+1}" type="hidden" value="{$value.idproduct}">  
