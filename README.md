@@ -17,3 +17,4 @@ Template utilizado Admin LTE https://adminlte.io/
 * Utilização de procedimentos SQL para otimização de processos no bando de dados.
 * Web Service de CEP.
 * Integração simples com PagSeguro e Paypal.
+* Integração com Boleto PHP
