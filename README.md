@@ -18,3 +18,7 @@ Template utilizado Admin LTE https://adminlte.io/
 * Web Service de CEP.
 * Integração simples com PagSeguro e Paypal.
 * Integração com Boleto PHP
+* Utilização da biblioteca PHPMailer
+* Sistema de Redefinição de Senha com envio de e-mail
+* Utilização de PDO (PHP Data Objects)
+
