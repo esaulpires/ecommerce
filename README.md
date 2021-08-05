@@ -14,7 +14,7 @@ Template utilizado Admin LTE https://adminlte.io/
 * Carregamento automático de classes e arquivos com PHP.
 * Utilização do Slim Framework e Rain Tpl.
 * Rotas.
-* Utilização de procedimentos SQL para otimização de processos no bando de dados.
+* Utilização de procedures SQL para otimização de processos no bando de dados.
 * Web Service de CEP.
 * Integração simples com PagSeguro e Paypal.
 * Integração com Boleto PHP
